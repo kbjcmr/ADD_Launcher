@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace ADD_Launcher
 {
@@ -17,6 +18,8 @@ namespace ADD_Launcher
         {
             string _heliName = "";
             string _traingType = "";
+            string _playerName = "";
+            string _rank = "";
 
             string[] parts = responseText.Split(new string[] { ": " }, StringSplitOptions.None);
 
@@ -38,67 +41,87 @@ namespace ADD_Launcher
                         {
                             _traingType = keyValue[1].Trim();
                         }
+                        else if (keyValue[0].Trim() == "_playerName")
+                        {
+                            //string[] _playerNames = keyValue[1].Trim().Split("@");
+                            //_playerName = (traingPerson == "Pilot") ? _playerNames[0] : _playerNames[1];
+                            _playerName = keyValue[1].Trim();
+                        }
+                        else if (keyValue[0].Trim() == "_rank")
+                        {
+                            //string[] _ranks = keyValue[1].Trim().Split("@");
+                            //_rank = (traingPerson == "Pilot") ? _ranks[0] : _ranks[1];
+                            _rank = keyValue[1].Trim();
+                        }
                     }
                 }
-            }
 
-            if ((_heliName == "" || _heliName == "None") || _traingType == "") return;
+                if ((_heliName == "" || _heliName == "None") || _traingType == "") return;
 
-            baseDirectory = "C:\\ADD";
-            filePath = Path.Combine(baseDirectory, $"{_heliName}_{_traingType}_{traingPerson}");
-            exeFilePath = Path.Combine(filePath, "ADD_HelicopterVRTraining.exe");
+                baseDirectory = "C:\\ADD";
+                filePath = Path.Combine(baseDirectory, $"{_heliName}_{_traingType}_{traingPerson}");
+                exeFilePath = Path.Combine(filePath, "ADD_HelicopterVRTraining.exe");
 
-            if (!Directory.Exists(baseDirectory))
-            {
-                Directory.CreateDirectory(baseDirectory);
-            }
 
-            if (!Directory.Exists(filePath))
-            {
-                Directory.CreateDirectory(filePath);
-            }
-
-            if (File.Exists(exeFilePath))
-            {
-                if (_heliName != "" && _traingType != "")
+                if (!Directory.Exists(baseDirectory))
                 {
-                    ExecuteExe(exeFilePath);
-                    Console.WriteLine("Training started.");
-                    //addLauncher.DetectStatusFile(filePath);
-                }
-            }
-            else
-            {
-                Console.WriteLine($" Warning! : '{exeFilePath}' file does not exist");
-            }
-        }
-
-        internal void ExecuteExe(string filePath)
-        {
-            try
-            {
-                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
-
-                Process[] runningProcess = Process.GetProcessesByName(fileNameWithoutExtension);
-
-                if (runningProcess.Any())
-                {
-                    Console.WriteLine("The program is already running");
-                    return;
+                    Directory.CreateDirectory(baseDirectory);
                 }
 
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                if (!Directory.Exists(filePath))
                 {
-                    FileName = filePath,
-                    UseShellExecute = true,
-                    CreateNoWindow = false
-                };
-                Process.Start(startInfo);
+                    Directory.CreateDirectory(filePath);
+                }
+
+                if (File.Exists(exeFilePath))
+                {
+                    if (_heliName != "" && _traingType != "")
+                    {
+                        ExecuteExe(exeFilePath, _playerName, _rank);
+                        Console.WriteLine("Training started.");
+                        //addLauncher.DetectStatusFile(filePath);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($" Warning! : '{exeFilePath}' file does not exist");
+                }
             }
-            catch (Exception ex)
+
+            void ExecuteExe(string filePath, string playerName, string rank)
             {
-                Console.WriteLine($"Error executing file: {ex.Message}");
+                try
+                {
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+
+                    Process[] runningProcess = Process.GetProcessesByName(fileNameWithoutExtension);
+
+                    if (runningProcess.Any())
+                    {
+                        Console.WriteLine("The program is already running");
+                        return;
+                    }
+
+                    string arguments = $"--playername \"{playerName}\" --rank \"{rank}\"";
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = filePath,
+                        Arguments = arguments,
+                        UseShellExecute = false,
+                        CreateNoWindow = false,
+                    };
+                    //addLauncher.audioPlayer.PlaySound("RequestPath");
+                    Process.Start(startInfo);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error executing file: {ex.Message}");
+                }
+
             }
         }
     }
 }
+
+
