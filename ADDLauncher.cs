@@ -15,7 +15,7 @@ namespace ADD_Launcher
 
         private bool isTrainingRunning = false;
         private bool receivedExecuteInfoResponse = false;
-        private bool isRestartTraining = false;    
+        private bool isRestartTraining = false;
 
         //private DateTime lastStatusFileChangeTime = DateTime.MinValue;
         //private static readonly object eventLock = new object();
@@ -194,7 +194,7 @@ namespace ADD_Launcher
             {
                 audioPlayer.PlaySound("LostMount");
                 Console.WriteLine("HMD is not mounted.");
-                RestartProgram();
+                //RestartProgram();
             }
             RequestStatusAsync();
         }
@@ -223,7 +223,7 @@ namespace ADD_Launcher
             else
             {
                 Console.WriteLine("Unity process is not running.");
-                RestartProgram();
+                //RestartProgram();
             }
             RequestStatusAsync();
         }
@@ -315,7 +315,7 @@ namespace ADD_Launcher
             {
                 if (isHMDMounted && isOculusRunning && !isTrainingRunning)
                 {
-                    launcher.ExecuteExe(launcher.exeFilePath);
+                    //launcher.ExecuteExe(launcher.exeFilePath);
                     isRestartTraining = true;
                 }
                 else
