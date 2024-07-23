@@ -1,0 +1,4 @@
+{
+    "Domain": "http://223.26.235.60:8080",
+    "TrainingPerson": "Copilot"
+}
